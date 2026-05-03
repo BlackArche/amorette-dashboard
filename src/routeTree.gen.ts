@@ -9,38 +9,201 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TemplatesRouteImport } from './routes/templates'
+import { Route as RsvpRouteImport } from './routes/rsvp'
+import { Route as PreviewRouteImport } from './routes/preview'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AuditLogsRouteImport } from './routes/audit-logs'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InvitationsIndexRouteImport } from './routes/invitations.index'
+import { Route as InvitationsNewRouteImport } from './routes/invitations.new'
+import { Route as InvitationsIdRouteImport } from './routes/invitations.$id'
 
+const TemplatesRoute = TemplatesRouteImport.update({
+  id: '/templates',
+  path: '/templates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RsvpRoute = RsvpRouteImport.update({
+  id: '/rsvp',
+  path: '/rsvp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreviewRoute = PreviewRouteImport.update({
+  id: '/preview',
+  path: '/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuditLogsRoute = AuditLogsRouteImport.update({
+  id: '/audit-logs',
+  path: '/audit-logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InvitationsIndexRoute = InvitationsIndexRouteImport.update({
+  id: '/invitations/',
+  path: '/invitations/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvitationsNewRoute = InvitationsNewRouteImport.update({
+  id: '/invitations/new',
+  path: '/invitations/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvitationsIdRoute = InvitationsIdRouteImport.update({
+  id: '/invitations/$id',
+  path: '/invitations/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/audit-logs': typeof AuditLogsRoute
+  '/login': typeof LoginRoute
+  '/preview': typeof PreviewRoute
+  '/rsvp': typeof RsvpRoute
+  '/templates': typeof TemplatesRoute
+  '/invitations/$id': typeof InvitationsIdRoute
+  '/invitations/new': typeof InvitationsNewRoute
+  '/invitations/': typeof InvitationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/audit-logs': typeof AuditLogsRoute
+  '/login': typeof LoginRoute
+  '/preview': typeof PreviewRoute
+  '/rsvp': typeof RsvpRoute
+  '/templates': typeof TemplatesRoute
+  '/invitations/$id': typeof InvitationsIdRoute
+  '/invitations/new': typeof InvitationsNewRoute
+  '/invitations': typeof InvitationsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/audit-logs': typeof AuditLogsRoute
+  '/login': typeof LoginRoute
+  '/preview': typeof PreviewRoute
+  '/rsvp': typeof RsvpRoute
+  '/templates': typeof TemplatesRoute
+  '/invitations/$id': typeof InvitationsIdRoute
+  '/invitations/new': typeof InvitationsNewRoute
+  '/invitations/': typeof InvitationsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/analytics'
+    | '/audit-logs'
+    | '/login'
+    | '/preview'
+    | '/rsvp'
+    | '/templates'
+    | '/invitations/$id'
+    | '/invitations/new'
+    | '/invitations/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/analytics'
+    | '/audit-logs'
+    | '/login'
+    | '/preview'
+    | '/rsvp'
+    | '/templates'
+    | '/invitations/$id'
+    | '/invitations/new'
+    | '/invitations'
+  id:
+    | '__root__'
+    | '/'
+    | '/analytics'
+    | '/audit-logs'
+    | '/login'
+    | '/preview'
+    | '/rsvp'
+    | '/templates'
+    | '/invitations/$id'
+    | '/invitations/new'
+    | '/invitations/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyticsRoute: typeof AnalyticsRoute
+  AuditLogsRoute: typeof AuditLogsRoute
+  LoginRoute: typeof LoginRoute
+  PreviewRoute: typeof PreviewRoute
+  RsvpRoute: typeof RsvpRoute
+  TemplatesRoute: typeof TemplatesRoute
+  InvitationsIdRoute: typeof InvitationsIdRoute
+  InvitationsNewRoute: typeof InvitationsNewRoute
+  InvitationsIndexRoute: typeof InvitationsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/templates': {
+      id: '/templates'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof TemplatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rsvp': {
+      id: '/rsvp'
+      path: '/rsvp'
+      fullPath: '/rsvp'
+      preLoaderRoute: typeof RsvpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preview': {
+      id: '/preview'
+      path: '/preview'
+      fullPath: '/preview'
+      preLoaderRoute: typeof PreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/audit-logs': {
+      id: '/audit-logs'
+      path: '/audit-logs'
+      fullPath: '/audit-logs'
+      preLoaderRoute: typeof AuditLogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,21 +211,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/invitations/': {
+      id: '/invitations/'
+      path: '/invitations'
+      fullPath: '/invitations/'
+      preLoaderRoute: typeof InvitationsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invitations/new': {
+      id: '/invitations/new'
+      path: '/invitations/new'
+      fullPath: '/invitations/new'
+      preLoaderRoute: typeof InvitationsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invitations/$id': {
+      id: '/invitations/$id'
+      path: '/invitations/$id'
+      fullPath: '/invitations/$id'
+      preLoaderRoute: typeof InvitationsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyticsRoute: AnalyticsRoute,
+  AuditLogsRoute: AuditLogsRoute,
+  LoginRoute: LoginRoute,
+  PreviewRoute: PreviewRoute,
+  RsvpRoute: RsvpRoute,
+  TemplatesRoute: TemplatesRoute,
+  InvitationsIdRoute: InvitationsIdRoute,
+  InvitationsNewRoute: InvitationsNewRoute,
+  InvitationsIndexRoute: InvitationsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
