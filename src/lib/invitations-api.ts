@@ -1,5 +1,15 @@
 import { api } from "./api";
-import type { InvitationFormValues } from "./invitation-schema";
+
+export interface InvitationCoreValues {
+  slug: string;
+  dateSlug: string;
+  template: string;
+  language: string;
+  date: string;
+  rsvpDeadline?: string;
+  notes?: string;
+  data?: Record<string, unknown>;
+}
 
 export interface Invitation {
   _id: string;
@@ -7,6 +17,7 @@ export interface Invitation {
   dateSlug: string;
   template?: string | { _id: string; name?: string };
   date?: string;
+  data?: Record<string, unknown>;
   couple?: { bride?: { name?: string }; groom?: { name?: string } };
   status?: string;
   views?: number;
