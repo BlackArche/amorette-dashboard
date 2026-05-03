@@ -5,8 +5,6 @@ import { PageHeader } from "@/components/PageHeader";
 import { Loading } from "@/components/Loading";
 import { InvitationEditor } from "@/components/InvitationEditor";
 import { getInvitation } from "@/lib/invitations-api";
-import type { InvitationFormValues } from "@/lib/invitation-schema";
-import type { PreviewMedia } from "@/lib/preview-bus";
 
 export const Route = createFileRoute("/invitations/$id")({
   component: EditPage,
@@ -24,8 +22,17 @@ function EditPage() {
       ) : (
         <InvitationEditor
           invitationId={id}
-          initial={data as unknown as Partial<InvitationFormValues>}
-          initialMedia={(data.media ?? {}) as PreviewMedia}
+          initial={{
+            slug: data.slug ?? "",
+            dateSlug: data.dateSlug ?? "",
+            date: data.date ?? "",
+            template:
+              typeof data.template === "string"
+                ? data.template
+                : (data.template as { _id?: string })?._id ?? "",
+            data: (data.data ?? {}) as Record<string, unknown>,
+          }}
+          initialMedia={data.media ?? {}}
         />
       )}
     </AppShell>
