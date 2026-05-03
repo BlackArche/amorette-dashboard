@@ -17,10 +17,17 @@ export const Route = createFileRoute("/analytics")({
 });
 
 function AnalyticsPage() {
+  const today = new Date();
+  const from = new Date(today);
+  from.setDate(from.getDate() - 30);
+  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+
   const { data, isLoading } = useQuery({
-    queryKey: ["analytics-trends"],
+    queryKey: ["analytics-trends", fmt(from), fmt(today)],
     queryFn: async () => {
-      const { data } = await api.get("/api/analytics/trends");
+      const { data } = await api.get("/api/analytics/trends", {
+        params: { from: fmt(from), to: fmt(today) },
+      });
       return (data?.trends ?? data?.data ?? data ?? []) as TrendPoint[];
     },
   });
