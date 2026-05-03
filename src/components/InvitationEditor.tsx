@@ -422,9 +422,12 @@ export function InvitationEditor({
           className="glass sticky bottom-4 z-10 flex items-center justify-between rounded-2xl p-3"
         >
           <div className="text-xs text-muted-foreground">
-            {invitationId
-              ? "Խմբագրում եք գոյություն ունեցող հրավիրատոմս"
-              : "Նոր հրավիրատոմս"}
+            <span className="inline-flex items-center gap-1.5">
+              <CloudCheck className="h-3.5 w-3.5 text-emerald-600" />
+              {draftSavedAt
+                ? `Ավտո-պահպանված ${new Date(draftSavedAt).toLocaleTimeString()}`
+                : "Ավտո-պահպանում միացված է"}
+            </span>
           </div>
           <Button
             type="submit"
