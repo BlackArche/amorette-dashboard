@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { Save, Settings2, Image as ImageIcon, Music, FileJson, Sparkles } from "lucide-react";
+import { Save, Settings2, Image as ImageIcon, Music, FileJson, Sparkles, CloudCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { listTemplates, getTemplate } from "@/lib/templates-api";
 import {
@@ -83,6 +83,42 @@ export function InvitationEditor({
   });
 
   const [data, setData] = useState<AnyRecord>(initial?.data ?? {});
+  const [draftSavedAt, setDraftSavedAt] = useState<number | null>(null);
+  const draftKey = `amorette:draft:${invitationId ?? "new"}`;
+
+  // Restore draft on mount (only when no server-provided initial.data)
+  useEffect(() => {
+    if (initial?.data && Object.keys(initial.data).length) return;
+    try {
+      const raw = localStorage.getItem(draftKey);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as { core?: Partial<CoreFields>; data?: AnyRecord; savedAt?: number };
+      if (parsed.core) setCore((c) => ({ ...c, ...parsed.core }));
+      if (parsed.data) setData(parsed.data);
+      if (parsed.savedAt) setDraftSavedAt(parsed.savedAt);
+      toast.message("Վերականգնված է չպահպանված սևագիրը");
+    } catch {
+      /* noop */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Auto-save draft (debounced)
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      try {
+        const savedAt = Date.now();
+        localStorage.setItem(
+          draftKey,
+          JSON.stringify({ core, data, savedAt }),
+        );
+        setDraftSavedAt(savedAt);
+      } catch {
+        /* noop */
+      }
+    }, 800);
+    return () => window.clearTimeout(id);
+  }, [core, data, draftKey]);
   const [files, setFiles] = useState<InvitationFiles>({
     couplePhoto: null,
     secondaryPhoto: null,
@@ -136,6 +172,7 @@ export function InvitationEditor({
     },
     onSuccess: (resp: Invitation | { invitation?: Invitation }) => {
       toast.success("Պահպանված է");
+      try { localStorage.removeItem(draftKey); } catch { /* noop */ }
       const inv =
         (resp as { invitation?: Invitation }).invitation ??
         (resp as Invitation);
@@ -385,9 +422,12 @@ export function InvitationEditor({
           className="glass sticky bottom-4 z-10 flex items-center justify-between rounded-2xl p-3"
         >
           <div className="text-xs text-muted-foreground">
-            {invitationId
-              ? "Խմբագրում եք գոյություն ունեցող հրավիրատոմս"
-              : "Նոր հրավիրատոմս"}
+            <span className="inline-flex items-center gap-1.5">
+              <CloudCheck className="h-3.5 w-3.5 text-emerald-600" />
+              {draftSavedAt
+                ? `Ավտո-պահպանված ${new Date(draftSavedAt).toLocaleTimeString()}`
+                : "Ավտո-պահպանում միացված է"}
+            </span>
           </div>
           <Button
             type="submit"
