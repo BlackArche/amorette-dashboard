@@ -1,32 +1,43 @@
 import { useEffect, useRef, useState } from "react";
 import { Eye, RefreshCw, Smartphone, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { PreviewPayload } from "@/lib/preview-bus";
 
 interface Props {
-  payload: PreviewPayload;
+  src: string;
+  payload: unknown;
 }
 
-export function LivePreviewFrame({ payload }: Props) {
+export function LivePreviewFrame({ src, payload }: Props) {
   const ref = useRef<HTMLIFrameElement | null>(null);
   const [device, setDevice] = useState<"phone" | "desktop">("phone");
-  const [ready, setReady] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
+  // Push updates whenever payload changes (after iframe loaded)
   useEffect(() => {
-    function onMessage(e: MessageEvent) {
-      if (e?.data?.type === "amorette:preview-ready") setReady(true);
-    }
-    window.addEventListener("message", onMessage);
-    return () => window.removeEventListener("message", onMessage);
-  }, []);
+    if (!loaded) return;
+    ref.current?.contentWindow?.postMessage(
+      { type: "UPDATE_PREVIEW", payload },
+      "*",
+    );
+  }, [payload, loaded]);
 
+  // Also push every ~600ms for the first few seconds in case the template
+  // attaches its message listener after onLoad fires.
   useEffect(() => {
-    if (!ready) return;
-    ref.current?.contentWindow?.postMessage(payload, "*");
-  }, [payload, ready]);
+    if (!loaded) return;
+    const start = Date.now();
+    const id = setInterval(() => {
+      ref.current?.contentWindow?.postMessage(
+        { type: "UPDATE_PREVIEW", payload },
+        "*",
+      );
+      if (Date.now() - start > 4000) clearInterval(id);
+    }, 600);
+    return () => clearInterval(id);
+  }, [loaded, payload]);
 
   const reload = () => {
-    setReady(false);
+    setLoaded(false);
     if (ref.current) ref.current.src = ref.current.src;
   };
 
@@ -58,12 +69,19 @@ export function LivePreviewFrame({ payload }: Props) {
             maxWidth: "100%",
           }}
         >
-          <iframe
-            ref={ref}
-            title="Invitation preview"
-            src="/preview"
-            className="h-full w-full border-0"
-          />
+          {src ? (
+            <iframe
+              ref={ref}
+              title="Invitation preview"
+              src={src}
+              onLoad={() => setLoaded(true)}
+              className="h-full w-full border-0"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center p-6 text-center text-sm text-muted-foreground">
+              Ընտրեք թեմփլեյթ՝ նախադիտումը տեսնելու համար
+            </div>
+          )}
         </div>
       </div>
     </div>

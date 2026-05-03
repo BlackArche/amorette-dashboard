@@ -1,5 +1,15 @@
 import { api } from "./api";
-import type { InvitationFormValues } from "./invitation-schema";
+
+export interface InvitationCoreValues {
+  slug: string;
+  dateSlug: string;
+  template: string;
+  language: string;
+  date: string;
+  rsvpDeadline?: string;
+  notes?: string;
+  data?: Record<string, unknown>;
+}
 
 export interface Invitation {
   _id: string;
@@ -7,6 +17,7 @@ export interface Invitation {
   dateSlug: string;
   template?: string | { _id: string; name?: string };
   date?: string;
+  data?: Record<string, unknown>;
   couple?: { bride?: { name?: string }; groom?: { name?: string } };
   status?: string;
   views?: number;
@@ -44,7 +55,7 @@ export interface InvitationFiles {
   gallery?: File[];
 }
 
-function buildFormData(values: InvitationFormValues, files: InvitationFiles) {
+function buildFormData(values: InvitationCoreValues, files: InvitationFiles) {
   const fd = new FormData();
   fd.append("slug", values.slug);
   fd.append("dateSlug", values.dateSlug);
@@ -53,10 +64,7 @@ function buildFormData(values: InvitationFormValues, files: InvitationFiles) {
   fd.append("date", values.date);
   fd.append("rsvpDeadline", values.rsvpDeadline ?? "");
   fd.append("notes", values.notes ?? "");
-  fd.append("couple", JSON.stringify(values.couple));
-  fd.append("event", JSON.stringify(values.event));
-  fd.append("texts", JSON.stringify(values.texts));
-  fd.append("sections", JSON.stringify(values.sections));
+  if (values.data) fd.append("data", JSON.stringify(values.data));
   if (files.couplePhoto) fd.append("couplePhoto", files.couplePhoto);
   if (files.secondaryPhoto) fd.append("secondaryPhoto", files.secondaryPhoto);
   if (files.backgroundPhoto) fd.append("backgroundPhoto", files.backgroundPhoto);
@@ -65,13 +73,13 @@ function buildFormData(values: InvitationFormValues, files: InvitationFiles) {
   return fd;
 }
 
-export async function createInvitation(values: InvitationFormValues, files: InvitationFiles) {
+export async function createInvitation(values: InvitationCoreValues, files: InvitationFiles) {
   const fd = buildFormData(values, files);
   const { data } = await api.post("/api/invitations", fd, { headers: { "Content-Type": "multipart/form-data" } });
   return data;
 }
 
-export async function updateInvitation(id: string, values: InvitationFormValues, files: InvitationFiles) {
+export async function updateInvitation(id: string, values: InvitationCoreValues, files: InvitationFiles) {
   const fd = buildFormData(values, files);
   const { data } = await api.put(`/api/invitations/${id}`, fd, { headers: { "Content-Type": "multipart/form-data" } });
   return data;
