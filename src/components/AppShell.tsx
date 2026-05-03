@@ -16,14 +16,15 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 
-const NAV = [
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
+const NAV: NavItem[] = [
   { to: "/", label: "Ընդհանուր", icon: LayoutDashboard, exact: true },
   { to: "/templates", label: "Թեմփլեյթներ", icon: LayoutTemplate },
   { to: "/invitations", label: "Հրավիրատոմսեր", icon: Mail },
   { to: "/rsvp", label: "RSVP", icon: Users },
   { to: "/analytics", label: "Անալիտիկա", icon: BarChart3 },
   { to: "/audit-logs", label: "Audit Log", icon: ShieldCheck },
-] as const;
+];
 
 function useDarkMode() {
   const [dark, setDark] = useState<boolean>(() => {
