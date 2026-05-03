@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   LayoutTemplate,
@@ -38,7 +38,7 @@ function useDarkMode() {
   return { dark, toggle: () => setDark((v) => !v) };
 }
 
-export function AppShell() {
+export function AppShell({ children }: { children: React.ReactNode }) {
   const { user, logout, isAuthenticated, loading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ export function AppShell() {
     );
   }
 
-  if (!isAuthenticated) return <Outlet />;
+  if (!isAuthenticated) return <>{children}</>;
 
   return (
     <div className="flex min-h-screen">
@@ -135,7 +135,7 @@ export function AppShell() {
           </div>
         </header>
         <div className="p-4 sm:p-6 lg:p-8">
-          <Outlet />
+          {children}
         </div>
         <nav className="sticky bottom-0 z-30 mt-6 grid grid-cols-6 gap-1 border-t border-border/60 bg-background/80 p-2 backdrop-blur-xl lg:hidden">
           {NAV.map((n) => {
